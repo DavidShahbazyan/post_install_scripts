@@ -13,6 +13,7 @@ export LOG_FILE_DIR='/tmp'
 export LOG_FILE_NAME='post_install.sh.log'
 export LOG_FILE_PATH="${LOG_FILE_DIR}/${LOG_FILE_NAME}"
 export PADD_LINE='------------------------------------------------------------'
+#export PADD_LINE='────────────────────────────────────────────────────────────'
 
 export DONE_SYMBOL='✔' # OK | ✔ | 🗸
 export FAILED_SYMBOL='✗' # Failed | ✗ | 🗶
