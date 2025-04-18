@@ -35,8 +35,8 @@ SKIP_COUNTDOWN=false
 BE_VERBOSE=false
 IS_INFINITE_ITERATION_ENABLED=true
 AVAILABLE_MODULES=()
-EXIT_MENU_INDEX=0
-RUN_ALL_MODULES_MENU_INDEX=-1
+MENU_CHOICE_EXIT='X'
+MENU_CHOICE_RUN_ALL_MODULES='A'
 
 
 function print_banner {
@@ -95,8 +95,8 @@ function print_menu {
     done
     RUN_ALL_MODULES_MENU_INDEX=$(($i + 2))
     echo -e " ${NC}$(print_n_times '─' 60)${CLEAR_REST_OF_LINE}"
-    print_menu_row "${RUN_ALL_MODULES_MENU_INDEX}" "ALL ABOVE"
-    print_menu_row "${EXIT_MENU_INDEX}" "EXIT"
+    print_menu_row "A" "ALL ABOVE"
+    print_menu_row "X" "EXIT"
 }
 
 function invoke_module {
@@ -131,25 +131,19 @@ function _start() {
         [ "${invalid_coice_error}" != '' ] && print_error "${invalid_coice_error}"
         echo
 
-        read -r -p "$(echo -e "${CYAN} ➣ Please, select the task index or press [Ctrl+C] to exit: ${NC}")" index
-        if [[ $index -ge 0 && $index -le $((${#AVAILABLE_MODULES[@]} + 2)) ]]; then
+        read -r -p "$(echo -e "${CYAN} ➣ Please, select the task index or press [Ctrl+C] to exit: ${NC}")" user_choice
+        if [[ "${user_choice,,}" == "${MENU_CHOICE_EXIT,,}" ]]; then
+            exit_app
+        elif [[ "${user_choice,,}" == "${MENU_CHOICE_RUN_ALL_MODULES,,}" ]]; then
+            echo -e "${YELLOW} 🗹 Your choice was:${NC} ${DARK_GREEN}ALL ABOVE${NC}"
+            for module in ${AVAILABLE_MODULES[@]}; do
+                bash ${module} $passThroughParams
+            done
+        elif [[ $index -ge 0 && $index -le $((${#AVAILABLE_MODULES[@]} + 1)) ]]; then
 
-            # "EXIT" menu item selected
-            if [[ $index -eq ${EXIT_MENU_INDEX} ]]; then
-                exit_app
-            fi
+            echo -e "${YELLOW} 🗹 Your choice was:${NC} ${DARK_GREEN}$(bash ${AVAILABLE_MODULES[$((index - 1))]} --print-name)${NC}"
+            invoke_module ${AVAILABLE_MODULES[$((index - 1))]} "$passThroughParams"
 
-            # "ALL ABOVE" menu item selected
-            if [[ $index -eq $((${#AVAILABLE_MODULES[@]} + 1)) ]]; then
-                echo -e "${YELLOW} 🗹 Your choice was:${NC} ${DARK_GREEN}ALL ABOVE${NC}"
-                for module in ${AVAILABLE_MODULES[@]}; do
-                    bash ${module} $passThroughParams
-                done
-            # Any other menu item selected
-            else
-                echo -e "${YELLOW} 🗹 Your choice was:${NC} ${DARK_GREEN}$(bash ${AVAILABLE_MODULES[$((index - 1))]} --print-name)${NC}"
-                invoke_module ${AVAILABLE_MODULES[$((index - 1))]} "$passThroughParams"
-            fi
             invalid_coice_error=''
 
             if [ ${IS_INFINITE_ITERATION_ENABLED} == true ]; then
