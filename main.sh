@@ -139,10 +139,10 @@ function _start() {
             for module in ${AVAILABLE_MODULES[@]}; do
                 bash ${module} $passThroughParams
             done
-        elif [[ $index -ge 0 && $index -le $((${#AVAILABLE_MODULES[@]} + 1)) ]]; then
+        elif [[ $user_choice -ge 0 && $user_choice -le $((${#AVAILABLE_MODULES[@]} + 1)) ]]; then
 
-            echo -e "${YELLOW} 🗹 Your choice was:${NC} ${DARK_GREEN}$(bash ${AVAILABLE_MODULES[$((index - 1))]} --print-name)${NC}"
-            invoke_module ${AVAILABLE_MODULES[$((index - 1))]} "$passThroughParams"
+            echo -e "${YELLOW} 🗹 Your choice was:${NC} ${DARK_GREEN}$(bash ${AVAILABLE_MODULES[$((user_choice - 1))]} --print-name)${NC}"
+            invoke_module ${AVAILABLE_MODULES[$((user_choice - 1))]} "$passThroughParams"
 
             invalid_coice_error=''
 
